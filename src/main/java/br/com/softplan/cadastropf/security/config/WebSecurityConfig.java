@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
+    public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoder());
     }
 
@@ -48,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Override
-    protected UserDetailsService userDetailsService()  {
+    protected UserDetailsService userDetailsService() {
         return super.userDetailsService();
     }
 
@@ -58,14 +59,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception{
+    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
         return new JwtAuthenticationTokenFilter();
     }
 
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception{
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html", "/webjars/**");
+    }
 
-        if("dev".equalsIgnoreCase(ambiente)){
+
+    @Override
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+
+        if ("dev".equalsIgnoreCase(ambiente)) {
 
             httpSecurity.csrf().disable()
                     .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
@@ -83,7 +90,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated();
         }
 
-        if("prod".equalsIgnoreCase(ambiente)) {
+        if ("prod".equalsIgnoreCase(ambiente)) {
             httpSecurity.csrf().disable()
                     .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -98,6 +105,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             "/**/*.js"
                     ).permitAll()
                     .antMatchers("/api/auth/**").permitAll()
+                    .antMatchers("/swagger-ui.html").permitAll()
                     .anyRequest().authenticated();
         }
 

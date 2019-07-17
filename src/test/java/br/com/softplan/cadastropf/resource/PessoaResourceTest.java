@@ -200,7 +200,7 @@ public class PessoaResourceTest extends ApplicationTest {
      */
     @Test
     public void n_getPessoaByCpfTest() throws Exception {
-        String params = "?cpf=268.233.408.35";
+        String params = "?cpf=018.843.270-10";
         MvcResult result = get(URL_RESOURCE + params);
         Assert.assertTrue(result.getResponse().getStatus() == HTTP_CODE_OK);
     }
@@ -235,7 +235,7 @@ public class PessoaResourceTest extends ApplicationTest {
      */
     @Test
     public void q_getPessoaByCpfNotFoundTest() throws Exception {
-        String params = "?cpf=268.233.408.35";
+        String params = "?cpf=018.843.270-10";
         MvcResult result = get(URL_RESOURCE + params);
         Assert.assertTrue(result.getResponse().getStatus() == HTTP_CODE_NOT_FOUND);
     }
@@ -246,7 +246,7 @@ public class PessoaResourceTest extends ApplicationTest {
      */
     private Pessoa getNovaPessoa() {
         Pessoa pessoa = new Pessoa();
-        pessoa.setCpf("268.233.408-35");
+        pessoa.setCpf("018.843.270-10");
         pessoa.setNome("Wanderson");
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, 1990);
