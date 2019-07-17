@@ -2,4 +2,3 @@
 
 API para cadastro de pessoas físicas.
 
-#Swagger
